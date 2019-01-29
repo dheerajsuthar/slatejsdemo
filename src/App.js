@@ -13,7 +13,8 @@ import styled from '@emotion/styled'
  */
 const EntityNode = styled.span`
   background-color: yellow;
-`
+`;
+
 /**
  * Give the menu some styles.
  *
@@ -34,7 +35,7 @@ const StyledMenu = styled.div`
   background-color: #222;
   border-radius: 4px;
   transition: opacity 0.75s;
-`
+`;
 
 /**
  * The hovering menu.
@@ -43,33 +44,35 @@ const StyledMenu = styled.div`
  */
 
 class HoverMenu extends React.Component {
-  /**
-   * Render.
-   *
-   * @return {Element}
-   */
+    /**
+     * Render.
+     *
+     * @return {Element}
+     */
 
-  render() {
-    const { className, innerRef } = this.props
-    const root = window.document.getElementById('root')
-    console.log('selectedText', this.props.selectedText);
+    render() {
+        const { className, innerRef } = this.props;
+        const root = window.document.getElementById('root');
+        console.log('selectedText', this.props.selectedText);
 
-    return ReactDOM.createPortal(
-      <StyledMenu className={className} innerRef={innerRef}>
-        <div><strong>Selected text: </strong>{this.props.selectedText}</div>
-        <button onMouseDown={this.onClickHandler}>Mark Entity</button>
-      </StyledMenu>,
-      root
-    )
-  }
+        return ReactDOM.createPortal(
+            <StyledMenu className={className} innerRef={innerRef}>
+                <div>
+                    <strong>Selected text: </strong>
+                    {this.props.selectedText}
+                </div>
+                <button onMouseDown={this.onClickHandler}>Mark Entity</button>
+            </StyledMenu>,
+            root
+        );
+    }
 
-  onClickHandler = (event) => {
-    debugger;
-    const editor = this.props.editor;
-    const isEntity = editor.value.blocks.some(block => block.type === 'entity')
-    event.preventDefault();
-    editor.toggleMark('entity');
-  }
+    onClickHandler = (event) => {
+        const { editor } = this.props.editor;
+        const isEntity = editor.value.blocks.some((block) => block.type === 'entity');
+        event.preventDefault();
+        editor.toggleMark('entity');
+    }
 }
 
 /**
@@ -78,100 +81,100 @@ class HoverMenu extends React.Component {
  * @type {Component}
  */
 
-class HoveringMenu extends React.Component {
-  /**
-   * Deserialize the raw initial value.
-   *
-   * @type {Object}
-   */
+class AnnotationEditor extends React.Component {
+    /**
+     * Deserialize the raw initial value.
+     *
+     * @type {Object}
+     */
 
-  state = {
-    value: Value.fromJSON(initialValue),
-  }
-
-  /**
-   * On update, update the menu.
-   */
-
-  componentDidMount = () => {
-    this.updateMenu()
-  }
-
-  componentDidUpdate = () => {
-    this.updateMenu()
-  }
-
-  /**
-   * Update the menu's absolute position.
-   */
-
-  updateMenu = () => {
-    const menu = this.menu
-    if (!menu) return
-
-    const { value } = this.state
-    const { fragment, selection } = value
-
-    if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
-      menu.removeAttribute('style')
-      return
+    state = {
+        value: Value.fromJSON(initialValue),
     }
 
-    const native = window.getSelection()
-    const range = native.getRangeAt(0)
-    const rect = range.getBoundingClientRect()
-    menu.style.opacity = 1
-    menu.style.top = `${rect.top + window.pageYOffset - menu.offsetHeight}px`
+    /**
+     * On update, update the menu.
+     */
 
-    menu.style.left = `${rect.left +
-      window.pageXOffset -
-      menu.offsetWidth / 2 +
-      rect.width / 2}px`
-  }
+    componentDidMount = () => {
+        this.updateMenu();
+    }
 
-  /**
-   * Render.
-   *
-   * @return {Element}
-   */
+    componentDidUpdate = () => {
+        this.updateMenu();
+    }
 
-  render() {
-    return (
-      <div>
-        <Editor
-          placeholder="Enter some text..."
-          value={this.state.value}
-          onChange={this.onChange}
-          renderEditor={this.renderEditor}
-          renderMark={this.renderMark}
-          css={css`
-          &:hover: {background-color: red;}
-          color: green;
-          margin-top: 50px;
-          `}
-        />
-      </div>
-    )
-  }
+    /**
+     * Update the menu's absolute position.
+     */
 
-  /**
-   * Render the editor.
-   *
-   * @param {Object} props
-   * @param {Function} next
-   * @return {Element}
-   */
+    updateMenu = () => {
+        const menu = this.menu;
+        if (!menu) return;
 
-  renderEditor = (props, editor, next) => {
-    const children = next()
-    return (
-      <React.Fragment>
-        {children}
-        <HoverMenu selectedText={this.state.value.fragment.text}
-          innerRef={menu => (this.menu = menu)} editor={editor} />
-      </React.Fragment>
-    )
-  }
+        const { value } = this.state;
+        const { fragment, selection } = value;
+
+        if (selection.isBlurred || selection.isCollapsed || fragment.text === '') {
+            menu.removeAttribute('style');
+            return;
+        }
+
+        const native = window.getSelection();
+        const range = native.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        menu.style.opacity = 1;
+        menu.style.top = `${rect.top + window.pageYOffset - menu.offsetHeight}px`;
+        menu.style.left = `${rect.left
+            + window.pageXOffset
+            - menu.offsetWidth / 2
+            + rect.width / 2}px`;
+    }
+
+    /**
+     * Render.
+     *
+     * @return {Element}
+     */
+
+    render() {
+        return (
+            <div>
+                <Editor
+                    placeholder="Enter some text..."
+                    value={this.state.value}
+                    onChange={this.onChange}
+                    renderEditor={this.renderEditor}
+                    renderMark={this.renderMark}
+                    css={css`
+                        margin-top: 50px;
+                    `}
+                />
+            </div>
+        );
+    }
+
+    /**
+     * Render the editor.
+     *
+     * @param {Object} props
+     * @param {Function} next
+     * @return {Element}
+     */
+
+    renderEditor = (props, editor, next) => {
+        const children = next();
+        return (
+            <React.Fragment>
+                {children}
+                <HoverMenu
+                    selectedText={this.state.value.fragment.text}
+                    innerRef={(menu) => { this.menu = menu; }}
+                    editor={editor}
+                />
+            </React.Fragment>
+        );
+    }
 
     /**
      * Render a Slate mark.
@@ -183,15 +186,14 @@ class HoveringMenu extends React.Component {
      */
 
     renderMark = (props, editor, next) => {
-      const { children, mark, attributes } = props;
-      switch (props.mark.type) {
-        case 'entity':
-        debugger;
-          return <EntityNode {...props}>{props.children}</EntityNode>
-        default:
-      return next();
+        const { children, mark, attributes } = props;
+        switch (props.mark.type) {
+            case 'entity':
+                return <EntityNode {...props}>{children}</EntityNode>;
+            default:
+                return next();
+        }
     }
-  }
 
     /**
      * On change.
@@ -200,10 +202,10 @@ class HoveringMenu extends React.Component {
      */
 
     onChange = ({ value }) => {
-      console.log(value);
-      this.setState({ value })
+        console.log(value);
+        this.setState({ value });
     }
-  }
+}
 
 
 class App extends React.Component {
@@ -211,8 +213,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-      {/* hello */}
-        <HoveringMenu ></HoveringMenu>
+        <AnnotationEditor ></AnnotationEditor>
       </div>
     );
   }
