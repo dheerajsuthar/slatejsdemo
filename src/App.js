@@ -144,7 +144,6 @@ class HoveringMenu extends React.Component {
           onChange={this.onChange}
           renderEditor={this.renderEditor}
           renderMark={this.renderMark}
-          renderNode={this.renderNode}
           css={css`
           &:hover: {background-color: red;}
           color: green;
@@ -172,24 +171,6 @@ class HoveringMenu extends React.Component {
           innerRef={menu => (this.menu = menu)} editor={editor} />
       </React.Fragment>
     )
-  }
-
-  /**
-   * Render a Slate node.
-   *
-   * @param {Object} props
-   * @param {Editor} editor
-   * @param {Function} next
-   * @return {Element}
-   */
-  renderNode = (props, editor, next) => {
-    // switch (props.node.type) {
-    //   case 'entity':
-    //   debugger;
-    //     return <EntityNode {...props} />
-    //   default:
-        return next()
-    // }
   }
 
     /**
